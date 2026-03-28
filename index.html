@@ -1,90 +1,414 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Grupo 14 — Frontend Performance</title>
-  <script src="https://cdn.tailwindcss.com"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Grupo 14 — Frontend Performance</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@600;700;800&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Barlow', sans-serif;
+  background: linear-gradient(135deg, #f8fafb 0%, #f1f5f9 100%);
+  color: #0f172a;
+  line-height: 1.6;
+}
+
+/* ── HEADER ── */
+header {
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+  color: white;
+  padding: 28px 48px;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.1);
+  border-bottom: 1px solid rgba(71, 85, 105, 0.2);
+}
+
+header h1 {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 2rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  margin-bottom: 4px;
+}
+
+header p {
+  font-size: 0.9rem;
+  opacity: 0.85;
+  font-weight: 500;
+}
+
+/* ── MAIN ── */
+main {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 48px 24px;
+}
+
+/* ── SECTIONS ── */
+section {
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 36px;
+  margin-bottom: 32px;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.08);
+  transition: all 0.3s ease;
+}
+
+section:hover {
+  border-color: #cbd5e1;
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.1);
+}
+
+section h2 {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #0f172a;
+  margin-bottom: 12px;
+  letter-spacing: -0.01em;
+}
+
+section p {
+  color: #64748b;
+  font-size: 0.95rem;
+  margin-bottom: 24px;
+  line-height: 1.7;
+}
+
+/* ── INPUTS ── */
+label {
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #64748b;
+  margin-bottom: 8px;
+}
+
+input[type="text"],
+#scroll-box {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-family: 'Barlow', sans-serif;
+  transition: all 0.3s ease;
+  background: white;
+}
+
+input[type="text"]:focus,
+#scroll-box:focus {
+  outline: none;
+  border-color: #0f172a;
+  box-shadow: 0 0 0 3px rgba(15, 23, 42, 0.1);
+}
+
+input[type="text"]::placeholder {
+  color: #94a3b8;
+}
+
+#scroll-box {
+  max-height: 300px;
+  overflow-y: auto;
+  padding: 16px;
+  background: #f8fafc;
+  color: #64748b;
+  font-size: 0.9rem;
+  line-height: 1.8;
+  resize: none;
+}
+
+#scroll-box::-webkit-scrollbar {
+  width: 6px;
+}
+
+#scroll-box::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+#scroll-box::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 3px;
+}
+
+/* ── LOG BOX ── */
+.log-box {
+  margin-top: 16px;
+  padding: 14px 16px;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  background: #f8fafc;
+  font-size: 0.85rem;
+  color: #475569;
+  font-weight: 500;
+  min-height: 2.5rem;
+}
+
+/* ── VEHICLE GRID ── */
+#vehicle-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 20px;
+  margin-top: 20px;
+}
+
+#vehicle-grid > div {
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+#vehicle-grid > div:hover {
+  border-color: #0f172a;
+  box-shadow: 0 6px 16px rgba(15, 23, 42, 0.12);
+  transform: translateY(-2px);
+}
+
+#vehicle-grid img {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+  background: linear-gradient(135deg, #e2e8f0 0%, #cbd5e1 100%);
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+
+#vehicle-grid img.opacity-100 {
+  opacity: 1;
+}
+
+.vehicle-id {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #64748b;
+  padding: 14px 14px 0;
+}
+
+.vehicle-title {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 1rem;
+  font-weight: 700;
+  color: #0f172a;
+  padding: 6px 14px 0;
+}
+
+.vehicle-detail {
+  color: #94a3b8;
+  font-size: 0.82rem;
+  padding: 6px 14px 14px;
+}
+
+/* ── TIPS ── */
+.tips {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  overflow: hidden;
+  margin-top: 28px;
+}
+
+.tips-header {
+  padding: 14px 18px;
+  border-bottom: 1px solid #e2e8f0;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #64748b;
+}
+
+.tip-item {
+  display: flex;
+  gap: 14px;
+  padding: 14px 18px;
+  border-bottom: 1px solid #e2e8f0;
+  font-size: 0.85rem;
+  transition: background 0.2s ease;
+}
+
+.tip-item:last-child {
+  border-bottom: none;
+}
+
+.tip-item:hover {
+  background: white;
+}
+
+.tip-num {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-weight: 700;
+  color: #0f172a;
+  min-width: 24px;
+  flex-shrink: 0;
+}
+
+.tip-text {
+  color: #64748b;
+  line-height: 1.6;
+}
+
+.tip-text strong {
+  color: #0f172a;
+  font-weight: 600;
+}
+
+/* ── RESPONSIVE ── */
+@media (max-width: 768px) {
+  header {
+    padding: 20px 20px;
+  }
+
+  header h1 {
+    font-size: 1.5rem;
+  }
+
+  main {
+    padding: 24px 16px;
+  }
+
+  section {
+    padding: 24px;
+    margin-bottom: 20px;
+  }
+
+  section h2 {
+    font-size: 1.4rem;
+  }
+
+  #vehicle-grid {
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 14px;
+  }
+
+  #vehicle-grid img {
+    height: 140px;
+  }
+}
+</style>
 </head>
-<body class="bg-gray-100 min-h-screen font-sans">
+<body>
 
-  <!-- ===== HEADER ===== -->
-  <header class="bg-indigo-700 text-white py-6 px-8 shadow-lg">
-    <h1 class="text-3xl font-bold">Grupo 14 — Frontend Performance</h1>
-    <p class="text-indigo-200 mt-1">Debounce · Throttle · Lazy Loading</p>
-  </header>
+<!-- HEADER -->
+<header>
+  <h1>Grupo 14 — Frontend Performance</h1>
+  <p>Debounce · Throttle · Lazy Loading</p>
+</header>
 
-  <main class="max-w-5xl mx-auto px-4 py-8 space-y-10">
+<main>
 
-    <!-- ===== CONCEPT 1: DEBOUNCE ===== -->
-    <section class="bg-white rounded-2xl shadow p-6">
-      <div class="flex items-center gap-3 mb-4">
-        <span class="bg-blue-100 text-blue-700 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wide">Concept 1</span>
-        <h2 class="text-xl font-bold text-gray-800">Debounce — Search vehicles</h2>
-      </div>
-      <p class="text-sm text-gray-500 mb-4">
-        The search only runs <strong>400 ms after you stop typing</strong>.
-        Without debounce, every keystroke would trigger a filter — debounce batches them into one call.
-      </p>
-      <input
-        id="search-input"
-        type="text"
-        placeholder="Type to search vehicles... (e.g. identifier or plate)"
-        class="w-full border border-gray-300 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
-      />
-      <div id="debounce-log" class="mt-3 text-xs text-blue-600 bg-blue-50 rounded-lg px-4 py-2 min-h-[2rem]">
-        Start typing to see debounce in action...
-      </div>
-    </section>
+  <!-- DEBOUNCE -->
+  <section id="debounce">
+    <h2>Debounce — Búsqueda</h2>
+    <p>La búsqueda se ejecuta 400 ms después de que dejas de escribir. Sin debounce, cada pulsación dispararía una búsqueda — debounce agrupa múltiples eventos en una sola llamada.</p>
+    
+    <label for="search-input">Buscar vehículos</label>
+    <input
+      id="search-input"
+      type="text"
+      placeholder="Escribe identificador o placa..."
+    />
+    <div id="debounce-log" class="log-box">
+      Comienza a escribir para ver debounce en acción...
+    </div>
 
-    <!-- ===== CONCEPT 2: THROTTLE ===== -->
-    <section class="bg-white rounded-2xl shadow p-6">
-      <div class="flex items-center gap-3 mb-4">
-        <span class="bg-orange-100 text-orange-700 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wide">Concept 2</span>
-        <h2 class="text-xl font-bold text-gray-800">Throttle — Scroll event</h2>
+    <div class="tips">
+      <div class="tips-header">Cómo Funciona</div>
+      <div class="tip-item">
+        <span class="tip-num">01</span>
+        <span class="tip-text"><strong>Sin Debounce</strong> — Cada letra que escribes dispara una búsqueda. 5 letras = 5 búsquedas.</span>
       </div>
-      <p class="text-sm text-gray-500 mb-4">
-        The scroll handler fires <strong>at most once every 300 ms</strong>.
-        Scroll inside the box below — without throttle, browsers fire hundreds of events per second.
-      </p>
-      <div
-        id="scroll-box"
-        class="h-32 overflow-y-scroll border border-gray-200 rounded-xl bg-gray-50 p-4 text-sm text-gray-400 space-y-2"
-      >
-        <p>↕ Scroll inside this box to trigger the throttled handler</p>
-        <p class="h-4"></p><p class="h-4"></p><p class="h-4"></p>
-        <p class="h-4"></p><p class="h-4"></p><p class="h-4"></p>
-        <p class="h-4"></p><p class="h-4"></p><p class="h-4"></p>
-        <p class="h-4"></p><p class="h-4"></p><p class="h-4"></p>
-        <p class="h-4"></p><p class="h-4"></p><p class="h-4"></p>
-        <p>— end —</p>
+      <div class="tip-item">
+        <span class="tip-num">02</span>
+        <span class="tip-text"><strong>Con Debounce</strong> — Se espera 400 ms después de la última letra. Solo se ejecuta una búsqueda cuando dejas de escribir.</span>
       </div>
-      <div id="throttle-log" class="mt-3 text-xs text-orange-600 bg-orange-50 rounded-lg px-4 py-2 min-h-[2rem]">
-        Scroll the box above to see throttle in action...
+      <div class="tip-item">
+        <span class="tip-num">03</span>
+        <span class="tip-text"><strong>Beneficio</strong> — Menos carga en servidor, mejor rendimiento, UX más fluida.</span>
       </div>
-    </section>
+    </div>
+  </section>
 
-    <!-- ===== CONCEPT 3: LAZY LOADING + VEHICLE GRID ===== -->
-    <section class="bg-white rounded-2xl shadow p-6">
-      <div class="flex items-center gap-3 mb-4">
-        <span class="bg-green-100 text-green-700 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wide">Concept 3</span>
-        <h2 class="text-xl font-bold text-gray-800">Lazy Loading — Vehicle cards</h2>
-      </div>
-      <p class="text-sm text-gray-500 mb-4">
-        Each vehicle card image is <strong>only loaded when it scrolls into the viewport</strong>
-        (IntersectionObserver). Images start as grey placeholders and fade in when visible.
-      </p>
-      <div id="lazy-log" class="mb-4 text-xs text-green-600 bg-green-50 rounded-lg px-4 py-2 min-h-[2rem]">
-        Waiting for vehicles to load...
-      </div>
-      <!-- Vehicle grid populated by script.js -->
-      <div id="vehicle-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-        <p class="col-span-full text-center text-gray-400 animate-pulse">Fetching vehicles...</p>
-      </div>
-    </section>
+  <!-- THROTTLE -->
+  <section id="throttle">
+    <h2>Throttle — Scroll</h2>
+    <p>Se ejecuta máximo una vez cada 300 ms. Sin throttle, los navegadores disparan cientos de eventos por segundo. Con throttle se ignoran los intermedios.</p>
+    
+    <label for="scroll-box">Desplázate en esta caja</label>
+    <div id="scroll-box">
+      <p>↕ Desplázate aquí para activar throttle</p>
+      <p style="margin-top: 20px;">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+      <p style="margin-top: 20px;">Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+      <p style="margin-top: 20px;">Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.</p>
+      <p style="margin-top: 20px;">Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+      <p style="margin-top: 20px;">Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium.</p>
+      <p style="margin-top: 20px;">— Fin del contenido</p>
+    </div>
+    <div id="throttle-log" class="log-box">
+      Desplázate arriba para ver throttle en acción...
+    </div>
 
-  </main>
+    <div class="tips">
+      <div class="tips-header">Cómo Funciona</div>
+      <div class="tip-item">
+        <span class="tip-num">01</span>
+        <span class="tip-text"><strong>Sin Throttle</strong> — Scroll genera 60+ eventos/segundo. Muy costoso para el rendimiento.</span>
+      </div>
+      <div class="tip-item">
+        <span class="tip-num">02</span>
+        <span class="tip-text"><strong>Con Throttle</strong> — Se ejecuta máximo cada 300 ms, ignorando eventos intermedios.</span>
+      </div>
+      <div class="tip-item">
+        <span class="tip-num">03</span>
+        <span class="tip-text"><strong>Casos de Uso</strong> — Scroll, resize, mousemove, click rápido. Cualquier evento frecuente.</span>
+      </div>
+    </div>
+  </section>
 
-  <script src="script.js"></script>
+  <!-- LAZY LOADING -->
+  <section id="lazyload">
+    <h2>Lazy Loading — Imágenes</h2>
+    <p>Las imágenes se cargan solo cuando entran en el viewport. Ahorra ancho de banda y acelera la carga inicial de la página.</p>
+    
+    <div id="lazy-log" class="log-box">
+      Esperando vehículos...
+    </div>
+
+    <div id="vehicle-grid">
+      <p style="grid-column: 1 / -1; text-align: center; color: #94a3b8; padding: 40px 20px;">Cargando vehículos...</p>
+    </div>
+
+    <div class="tips">
+      <div class="tips-header">Cómo Funciona</div>
+      <div class="tip-item">
+        <span class="tip-num">01</span>
+        <span class="tip-text"><strong>IntersectionObserver</strong> — API nativa que detecta cuándo un elemento entra al viewport.</span>
+      </div>
+      <div class="tip-item">
+        <span class="tip-num">02</span>
+        <span class="tip-text"><strong>Data-src</strong> — Las imágenes usan data-src en lugar de src. Se cargan solo cuando aparecen.</span>
+      </div>
+      <div class="tip-item">
+        <span class="tip-num">03</span>
+        <span class="tip-text"><strong>Fade-in Animation</strong> — Las imágenes se desvanecen suavemente cuando se cargan.</span>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<script src="script.js"></script>
 </body>
 </html>

@@ -95,39 +95,40 @@ const observer  = lazyObserver();
 function renderCards(vehicles) {
   grid.innerHTML = '';
   if (vehicles.length === 0) {
-    grid.innerHTML = '<p class="col-span-full text-center text-gray-500">No vehicles found.</p>';
+    grid.innerHTML = '<p class="col-span-full text-center text-slate-400 text-sm font-medium">No se encontraron vehículos.</p>';
     return;
   }
 
   vehicles.forEach((v, i) => {
     const card = document.createElement('div');
-    card.className = 'bg-white rounded-2xl shadow p-4 flex flex-col gap-3';
+    card.className = 'rounded-lg overflow-hidden flex flex-col gap-3';
 
     // Lazy-loaded placeholder image
     const img = document.createElement('img');
     img.dataset.src = v.photoUrl || `https://picsum.photos/seed/${v.idVehicle || i}/400/200`;
-    img.src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="400" height="200"%3E%3Crect width="400" height="200" fill="%23e5e7eb"/%3E%3Ctext x="50%25" y="50%25" dominant-baseline="middle" text-anchor="middle" fill="%239ca3af" font-size="14"%3ELoading...%3C/text%3E%3C/svg%3E';
+    img.src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="400" height="200"%3E%3Crect width="400" height="200" fill="%23e2e8f0"/%3E%3Ctext x="50%25" y="50%25" dominant-baseline="middle" text-anchor="middle" fill="%2394a3b8" font-size="14"%3ECargando...%3C/text%3E%3C/svg%3E';
     img.alt = `${v.brand || 'Vehicle'} ${v.model || ''}`.trim();
-    img.className = 'w-full h-36 object-cover rounded-xl opacity-0';
+    img.className = 'w-full h-40 object-cover opacity-0';
     observer.observe(img);   // <-- LAZY LOADING registered here
 
     const identifier = document.createElement('p');
-    identifier.className = 'text-xs font-semibold uppercase tracking-[0.2em] text-blue-600';
-    identifier.textContent = v.identifier || `Vehicle #${v.idVehicle || i + 1}`;
+    identifier.className = 'vehicle-id px-4 pt-3';
+    identifier.textContent = v.identifier || `Vehículo #${v.idVehicle || i + 1}`;
 
     const title = document.createElement('h3');
-    title.className = 'font-semibold text-gray-800 text-lg';
-    title.textContent = `${v.brand || 'Unknown brand'} ${v.model || ''}`.trim();
+    title.className = 'vehicle-title px-4';
+    title.textContent = `${v.brand || 'Marca desconocida'} ${v.model || ''}`.trim();
 
     const detail = document.createElement('p');
-    detail.className = 'text-sm text-gray-500';
-    detail.textContent = v.plate || 'No plate';
+    detail.className = 'vehicle-detail px-4 pb-4';
+    detail.textContent = v.plate || 'Sin placa';
 
     card.append(img, identifier, title, detail);
     grid.appendChild(card);
   });
 
-  lazyLog.textContent = `Lazy loading: ${vehicles.length} images registered with IntersectionObserver — images load as you scroll into view.`;
+  lazyLog.textContent = `Lazy loading: ${vehicles.length} imágenes registradas con IntersectionObserver — las imágenes se cargan mientras desplazas.`;
+  lazyLog.classList.add('active-green');
 }
 
 // Filter vehicles by search term
@@ -147,12 +148,14 @@ function filterVehicles(term) {
 const handleSearch = debounce((term) => {
   const results = filterVehicles(term);
   renderCards(results);
+  debounceLog.classList.add('active-blue');
   debounceLog.textContent =
-    `Debounce fired! Searched "${term}" → ${results.length} results. (waited 400 ms after you stopped typing)`;
+    `¡Debounce ejecutado! Búsqueda de "${term}" → ${results.length} resultados. (esperó 400 ms después de que dejaste de escribir)`;
 }, 400);
 
 searchInput.addEventListener('input', (e) => {
-  debounceLog.textContent = 'Debounce: waiting for you to stop typing...';
+  debounceLog.classList.remove('active-blue');
+  debounceLog.textContent = 'Debounce: esperando a que dejes de escribir...';
   handleSearch(e.target.value);
 });
 
@@ -163,8 +166,9 @@ searchInput.addEventListener('input', (e) => {
 let scrollCount = 0;
 const handleScroll = throttle(() => {
   scrollCount++;
+  throttleLog.classList.add('active-orange');
   throttleLog.textContent =
-    `Throttle fired! Scroll event #${scrollCount} processed. (max 1 per 300 ms, extra events ignored)`;
+    `¡Throttle ejecutado! Evento de scroll #${scrollCount} procesado. (máx. 1 cada 300 ms, eventos extra ignorados)`;
 }, 300);
 
 scrollBox.addEventListener('scroll', handleScroll);
@@ -173,7 +177,7 @@ scrollBox.addEventListener('scroll', handleScroll);
 // INITIAL LOAD — fetch all vehicles on page ready
 // ============================================================
 async function init() {
-  grid.innerHTML = '<p class="col-span-full text-center text-gray-400 animate-pulse">Fetching vehicles...</p>';
+  grid.innerHTML = '<p class="col-span-full text-center text-slate-400 animate-pulse text-sm font-medium">Cargando vehículos...</p>';
   try {
     allVehicles = await fetchVehicles();
     // Normalise: accept array or { data: [...] } shape
@@ -182,7 +186,7 @@ async function init() {
     }
     renderCards(allVehicles);
   } catch (err) {
-    grid.innerHTML = `<p class="col-span-full text-center text-red-500">Error: ${err.message}</p>`;
+    grid.innerHTML = `<p class="col-span-full text-center text-red-600 font-medium">Error: ${err.message}</p>`;
   }
 }
 
