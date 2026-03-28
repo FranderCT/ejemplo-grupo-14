@@ -1,0 +1,2 @@
+profeeeee, tiene que ejecutar el programa en el localhost:3000.
+nosotros estamos usando una libreria de npm que se llama serve
