@@ -2,12 +2,15 @@
 // API BASE URL
 // ============================================================
 const baseApiUrl = 'https://transportespadilla-backend-production.up.railway.app/vehicles';
+const defaultLimit = 50;
 
 // ============================================================
 // FETCH LAYER — functions to call the API
 // ============================================================
 async function fetchVehicles() {
-  const res = await fetch(baseApiUrl);
+  const url = new URL(baseApiUrl);
+  url.searchParams.set('limit', defaultLimit);
+  const res = await fetch(url);
   if (!res.ok) throw new Error(`HTTP error: ${res.status}`);
   return res.json();
 }
@@ -98,29 +101,29 @@ function renderCards(vehicles) {
 
   vehicles.forEach((v, i) => {
     const card = document.createElement('div');
-    card.className = 'bg-white rounded-2xl shadow p-4 flex flex-col gap-2';
+    card.className = 'bg-white rounded-2xl shadow p-4 flex flex-col gap-3';
 
     // Lazy-loaded placeholder image
     const img = document.createElement('img');
-    img.dataset.src = `https://picsum.photos/seed/${v.id || i}/400/200`;
+    img.dataset.src = v.photoUrl || `https://picsum.photos/seed/${v.idVehicle || i}/400/200`;
     img.src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="400" height="200"%3E%3Crect width="400" height="200" fill="%23e5e7eb"/%3E%3Ctext x="50%25" y="50%25" dominant-baseline="middle" text-anchor="middle" fill="%239ca3af" font-size="14"%3ELoading...%3C/text%3E%3C/svg%3E';
-    img.alt = v.plate || v.name || 'Vehicle';
+    img.alt = `${v.brand || 'Vehicle'} ${v.model || ''}`.trim();
     img.className = 'w-full h-36 object-cover rounded-xl opacity-0';
     observer.observe(img);   // <-- LAZY LOADING registered here
 
+    const identifier = document.createElement('p');
+    identifier.className = 'text-xs font-semibold uppercase tracking-[0.2em] text-blue-600';
+    identifier.textContent = v.identifier || `Vehicle #${v.idVehicle || i + 1}`;
+
     const title = document.createElement('h3');
     title.className = 'font-semibold text-gray-800 text-lg';
-    title.textContent = v.plate || v.name || `Vehicle #${v.id}`;
+    title.textContent = `${v.brand || 'Unknown brand'} ${v.model || ''}`.trim();
 
     const detail = document.createElement('p');
     detail.className = 'text-sm text-gray-500';
-    detail.textContent = Object.entries(v)
-      .filter(([k]) => !['id', 'plate', 'name'].includes(k))
-      .slice(0, 2)
-      .map(([k, val]) => `${k}: ${val}`)
-      .join(' · ') || 'No extra details';
+    detail.textContent = v.plate || 'No plate';
 
-    card.append(img, title, detail);
+    card.append(img, identifier, title, detail);
     grid.appendChild(card);
   });
 
@@ -130,9 +133,11 @@ function renderCards(vehicles) {
 // Filter vehicles by search term
 function filterVehicles(term) {
   const lower = term.toLowerCase();
-  return allVehicles.filter(v =>
-    JSON.stringify(v).toLowerCase().includes(lower)
-  );
+  return allVehicles.filter(v => {
+    const identifier = (v.identifier || '').toLowerCase();
+    const plate = (v.plate || '').toLowerCase();
+    return identifier.includes(lower) || plate.includes(lower);
+  });
 }
 
 // ============================================================
