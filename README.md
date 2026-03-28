@@ -1,4 +1,8 @@
 # Grupo 14 - Frontend Performance
+#Integrantes 
+- Frander Carrillo Torres
+- Axel Castillo Zúñiga
+- Axel Ramos Villegas
 
 ## Tema asignado
 Optimizacion de rendimiento en frontend mediante `debounce`, `throttle` y `lazy loading`.
